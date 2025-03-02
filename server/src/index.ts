@@ -1,16 +1,13 @@
 import express from "express";
+import authRouter from "./routes/auth";
 
 const app = express();
 
+// app.use(express.json());
+// app.use(express.urlencoded({extended: false}));
+app.use("/auth", authRouter);
+
 const port = process.env.PORT || 8989;
-
-app.get("/", (request, response) => {
-  response.send("<h1>Hello this is our app!</h1>");
-});
-
-app.get("/login", (request, response) => {
-  response.send("<h1>Hello this is our login page!</h1>");
-});
 
 app.listen(port, () => {
   console.log(`The application is running on port http://localhost:${port}`);
