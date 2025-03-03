@@ -1,7 +1,17 @@
 import {compareSync, genSaltSync, hashSync} from "bcrypt";
-import {model, Schema} from "mongoose";
+import {Model, model, Schema} from "mongoose";
 
-const verificationTokenSchema = new Schema({
+interface VerficationTokenDoc {
+  userId: string;
+  token: string;
+  expires: Date;
+}
+
+interface Methods {
+  compare(token: string): boolean;
+}
+
+const verificationTokenSchema = new Schema<VerficationTokenDoc, {}, Methods>({
   userId: {
     type: String,
     required: true,
@@ -34,4 +44,8 @@ const VerificationTokenModel = model(
   verificationTokenSchema
 );
 
-export default VerificationTokenModel;
+export default VerificationTokenModel as Model<
+  VerficationTokenDoc,
+  {},
+  Methods
+>;

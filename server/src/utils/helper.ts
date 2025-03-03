@@ -1,3 +1,5 @@
+import {Response} from "express";
+
 type ErrorResponseType = {
   res: Response;
   message: string;
