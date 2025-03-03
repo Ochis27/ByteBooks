@@ -1,5 +1,6 @@
 import UserModel from "@/models/user";
 import VerificationTokenModel from "@/models/verificationToken";
+import {sendErrorResponse} from "@/utils/helper";
 import mail from "@/utils/mail";
 import crypto from "crypto";
 import {RequestHandler} from "express";
@@ -33,4 +34,20 @@ export const generateAuthLink: RequestHandler = async (req, res) => {
   });
 
   res.json({message: "Please check your email for link."});
+};
+
+export const verifyAuthToken: RequestHandler = async (res, req) => {
+  const {token, userId} = req.query;
+  if (typeof token !== "string" || typeof userId !== "string") {
+    return sendErrorResponse({
+      status: 403,
+      messahe: "Invalid request!",
+      res,
+    });
+  }
+  const verificationToken = await VerificationTokenModel.findOne({userId});
+
+  if (!verificationToken && verifyAuthToken.compare()) {
+  }
+  res.json({});
 };
