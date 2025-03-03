@@ -1,5 +1,7 @@
 import "@/db/connect";
 import express from "express";
+import "express-async-errors";
+import {errorHandler} from "./middlewares/error";
 import authRouter from "./routes/auth";
 
 const app = express();
@@ -11,6 +13,8 @@ app.post("/test", (req, res) => {
   console.log(req.body);
   res.json({});
 });
+
+app.use(errorHandler);
 
 const port = process.env.PORT || 8989;
 
