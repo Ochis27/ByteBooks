@@ -1,9 +1,10 @@
 import UserModel from "@/models/user";
 import VerificationTokenModel from "@/models/verificationToken";
-import {sendErrorResponse} from "@/utils/helper";
+import {formatUserProfile, sendErrorResponse} from "@/utils/helper";
 import mail from "@/utils/mail";
 import crypto from "crypto";
 import {RequestHandler} from "express";
+import jwt from "jsonwebtoken";
 
 export const generateAuthLink: RequestHandler = async (req, res) => {
   // Generate authentication link
@@ -79,6 +80,22 @@ export const verifyAuthToken: RequestHandler = async (req, res) => {
   await VerificationTokenModel.findByIdAndDelete(verificationToken._id);
 
   // TODO: authentication
+  const payload = {userId: user._id};
 
-  res.json({});
+  const authToken = jwt.sign(payload, process.env.JWT_SECRET!, {
+    expiresIn: "15d",
+  });
+
+  res.cookie("authToken", authToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== "development",
+    sameSite: "strict",
+    expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+  });
+
+  res.redirect(
+    `${process.env.AUTH_SUCCESS_URL}?profile=${JSON.stringify(
+      formatUserProfile(user)
+    )}`
+  );
 };
