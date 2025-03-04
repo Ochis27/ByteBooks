@@ -1,6 +1,6 @@
 import UserModel from "@/models/user";
 import VerificationTokenModel from "@/models/verificationToken";
-import {formatUserProfile, sendErrorResponse} from "@/utils/helper";
+import {sendErrorResponse} from "@/utils/helper";
 import mail from "@/utils/mail";
 import crypto from "crypto";
 import {RequestHandler} from "express";
@@ -93,9 +93,15 @@ export const verifyAuthToken: RequestHandler = async (req, res) => {
     expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
   });
 
-  res.redirect(
-    `${process.env.AUTH_SUCCESS_URL}?profile=${JSON.stringify(
-      formatUserProfile(user)
-    )}`
-  );
+  res.send();
+};
+
+export const sendProfileInfo: RequestHandler = (req, res) => {
+  res.json({
+    profile: req.user,
+  });
+};
+
+export const logout: RequestHandler = (req, res) => {
+  res.clearCookie("authToken").send();
 };
